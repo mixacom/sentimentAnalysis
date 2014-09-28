@@ -10,32 +10,42 @@
    
    
    <style>
-	body {
-	    background-color: linen;
-	    padding: 5%;
-	    margin: 0;
-	    text-align: center;
-	}
-	h1 {
-		font-family: Verdana, sans-serif;
-		color: gray;
-	}
-	input[type='text'] {
-		width: 40%;
-		margin-right: 15px;
-	}
-	input[type='radio'] {
-		margin-top: 10px;
-	}
+		body {
+		    background-color: linen;
+		    padding: 5%;
+		    margin: 0;
+		    text-align: center;
+		}
+		h1 {
+			font-family: Verdana, sans-serif;
+			color: gray;
+			margin-top :0;
+		}
+		input[type='text'] {
+			width: 40%;
+			margin-right: 15px;
+		}
+		input[type='radio'] {
+			margin-top: 10px;
+		}
+		#results {
+			width: 100%;
+			margin-top: 5%;
+			border-top: solid 5px white;
+		}
 	</style>
 </head>
 <body>
-	<h1>Twitter Sentiment Analysis
-</h1>
+	<h1>Twitter Sentiment Analysis</h1>
 	<form action="">
-	  <input type="text" name="query" placeholder="Type your query"><input type="submit" value="Search">
+	  <input type="text" name="query" placeholder="Type your query" [#nested]><input type="submit" value="Search">
 	  <br />
-	  <input type="radio" name="type" value="positive" checked>Get positive tweets
-	  <input type="radio" name="type" value="negative">Get negative tweets
-	  <input type="radio" name="type" value="statistics">Get sentimental statistics
+	  <input type="radio" name="type" value="positive" [#nested]>Get positive tweets
+	  <input type="radio" name="type" value="negative" [#nested]>Get negative tweets
+	  <input type="radio" name="type" value="statistics" [#nested]>Get sentimental statistics
 	</form>
+	<div id="results">
+		[#nested]
+	</div>
+</body>
+</html>
