@@ -41,6 +41,7 @@ public class TweetController {
 		Tweet[] relavantTweets = {new Tweet("John", new Date(), "Some interesting tweet"), new Tweet("Joe", new Date(), "Another very interesting tweet")};
 		
 		// Show the tweets in html code
+		// TODO: Refactor the view-components out of this controller
 		String tweetHTML = "";
 		for (Tweet tweet: relavantTweets) {
 			tweetHTML += 
@@ -62,11 +63,11 @@ public class TweetController {
 		
 		// Insert the relevant components into the html
 		String[] nested = {
-				"value="+query,
+				"value='"+query+"'",
 				"checked", 
 				"", 
 				"",
-				"<p>Positive tweets about: '"+ query +"'</p>" + tweetHTML
+				"<tr><th><h2>Positive tweets about: '"+ query +"'</h2></th></tr>" + tweetHTML
 		};
 		String page = readFile("webFrondEnd/mainPage.html", nested);
 		return page;
