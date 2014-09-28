@@ -31,15 +31,18 @@ public class TweetController {
 	
 	
 	private String getPositiveTweets(String query) {
-		return "<html><body><h1>Positive sentiment tweets about: " + query + "</h1></body></html>";
+		String page = readFile("webFrondEnd/mainPage.html");
+		return page + "<p>Positive tweets about: '"+ query +"'</p></body></html>";
 	}
 	
 	private String getNegativeTweets(String query) {
-		return "<html><body><h1>Negative sentiment tweets about: " + query + "</h1></body></html>";
+		String page = readFile("webFrondEnd/mainPage.html");
+		return page + "<p>Negative tweets about: '"+ query +"'</p></body></html>";
 	}
 	
 	private String statistics(String query) {
-		return "<html><body><h1>Sentiment analyzis of tweets about: " + query + "</h1></body></html>";
+		String page = readFile("webFrondEnd/mainPage.html");
+		return page + "<p>Statistics about: '"+ query +"'</p></body></html>";
 	}
 	
 	private String readFile(String file) {
@@ -58,6 +61,6 @@ public class TweetController {
         	result = "<html><body><h1>Error while closing the stream of the mainpage</h1></body></html>";
         }
         
-        return result;
+        return result + "</body></html>";
 	}
 }
