@@ -30,6 +30,11 @@ public class TweetController {
     }
 	
 	
+	/**
+	 * Call-back method for positive tweets
+	 * @param query The query from the user
+	 * @return A string containing the HTML-code for the resulting page, which shows the most positive tweets related to the query
+	 */
 	private String getPositiveTweets(String query) {
 		String[] nested = {
 				"value="+query,
@@ -42,6 +47,11 @@ public class TweetController {
 		return page;
 	}
 	
+	/**
+	 * Call-back method for negative tweets
+	 * @param query The query from the user
+	 * @return A string containing the HTML-code for the resulting page, which shows the most negative tweets related to the query
+	 */
 	private String getNegativeTweets(String query) {
 		String[] nested = {
 				"value="+query,
@@ -54,6 +64,11 @@ public class TweetController {
 		return page;
 	}
 	
+	/**
+	 * Call-back method for sentimental statistics about the query
+	 * @param query The query from the user
+	 * @return A string containing the HTML-code for the resulting page, which shows the sentimental statistics related to the query
+	 */
 	private String statistics(String query) {
 		String[] nested = {
 				"value="+query,
