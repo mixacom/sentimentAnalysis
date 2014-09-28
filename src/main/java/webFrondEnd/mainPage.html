@@ -33,6 +33,20 @@
 			margin-top: 5%;
 			border-top: solid 5px white;
 		}
+		.singleResult {
+			border: solid 1px gray;
+			margin-top: 2px;
+			width: 100%;
+		}
+		.singleResult:hover {
+			border-color: black;
+		}
+		#results .user {
+			float: left;
+		}
+		#results .date {
+			float: right;
+		}
 	</style>
 </head>
 <body>
@@ -44,8 +58,8 @@
 	  <input type="radio" name="type" value="negative" [#nested]>Get negative tweets
 	  <input type="radio" name="type" value="statistics" [#nested]>Get sentimental statistics
 	</form>
-	<div id="results">
+	<table id="results">
 		[#nested]
-	</div>
+	</table>
 </body>
 </html>

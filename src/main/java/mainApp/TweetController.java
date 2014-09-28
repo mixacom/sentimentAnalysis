@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,12 +37,36 @@ public class TweetController {
 	 * @return A string containing the HTML-code for the resulting page, which shows the most positive tweets related to the query
 	 */
 	private String getPositiveTweets(String query) {
+		// Get the relevant tweets (now using stub-data)
+		Tweet[] relavantTweets = {new Tweet("John", new Date(), "Some interesting tweet"), new Tweet("Joe", new Date(), "Another very interesting tweet")};
+		
+		// Show the tweets in html code
+		String tweetHTML = "";
+		for (Tweet tweet: relavantTweets) {
+			tweetHTML += 
+					"<tr>" +
+						"<td>" +
+							"<table class='singleResult'>" +
+								"<tr>" + 
+									"<td class='user'>" +
+									tweet.getUser() + 
+									"</td><td class='date'>" +
+									tweet.getDate().toString() + "</td>" +
+								"</tr><tr class='content'><td>" +
+									tweet.getContent() + "</td>" +
+								"</tr>" +
+							"</table>" +
+						"</td>" +
+					"</tr>"; 
+		}
+		
+		// Insert the relevant components into the html
 		String[] nested = {
 				"value="+query,
 				"checked", 
 				"", 
 				"",
-				"<p>Positive tweets about: '"+ query +"'</p>"
+				"<p>Positive tweets about: '"+ query +"'</p>" + tweetHTML
 		};
 		String page = readFile("webFrondEnd/mainPage.html", nested);
 		return page;
