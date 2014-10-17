@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Date;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 public class TweetController {
@@ -17,15 +17,13 @@ public class TweetController {
 	@RequestMapping("/")
     public String init(@RequestParam(value="query", required=false) String q, @RequestParam(value="type", required=false) String type) {
         if (q == null) {
-			String fileContent = readFile("webFrondEnd/mainPage.html", new String[]{"", "", "", "checked", ""});
+			String fileContent = readFile("webFrondEnd/mainPage.html", new String[]{"", "checked", "", ""});
 			return fileContent;
         } else {
         	if (type.equals("positive")) {
         		return getPositiveTweets(q);
-        	} else if (type.equals("negative")) {
-        		return getNegativeTweets(q);
         	} else {
-        		return statistics(q);
+        		return getNegativeTweets(q);
         	}
         }
     }
@@ -38,8 +36,8 @@ public class TweetController {
 	 */
 	private String getPositiveTweets(String query) {
 		// Get the relevant tweets (now using stub-data)
-		Tweet[] relavantTweets = {new Tweet("John", new Date(), "Some interesting tweet"), new Tweet("Joe", new Date(), "Another very interesting tweet")};
-		
+		//Tweet[] relavantTweets = {new Tweet("John", new Date(), "Some interesting tweet"), new Tweet("Joe", new Date(), "Another very interesting tweet")};
+		Tweet[] relavantTweets = {new Tweet("test"), new Tweet("Wat is dit"), new Tweet("test"), new Tweet("Wat is dit"), new Tweet("test"), new Tweet("Wat is dit")};
 		// Show the tweets in html code
 		// TODO: Refactor the view-components out of this controller
 		String tweetHTML = "";
@@ -50,9 +48,9 @@ public class TweetController {
 							"<table class='singleResult'>" +
 								"<tr>" + 
 									"<td class='user'>" +
-									tweet.getUser() + 
+									tweet.getScore() + 
 									"</td><td class='date'>" +
-									tweet.getDate().toString() + "</td>" +
+									tweet.getSentimentClass() + "</td>" +
 								"</tr><tr class='content'><td>" +
 									tweet.getContent() + "</td>" +
 								"</tr>" +
@@ -66,7 +64,6 @@ public class TweetController {
 				"value='"+query+"'",
 				"checked", 
 				"", 
-				"",
 				"<tr><th><h2>Positive tweets about: '"+ query +"'</h2></th></tr>" + tweetHTML
 		};
 		String page = readFile("webFrondEnd/mainPage.html", nested);
@@ -83,29 +80,12 @@ public class TweetController {
 				"value="+query,
 				"", 
 				"checked", 
-				"",
 				"<p>Negative tweets about: '"+ query +"'</p>"
 		};
 		String page = readFile("webFrondEnd/mainPage.html", nested);
 		return page;
 	}
 	
-	/**
-	 * Call-back method for sentimental statistics about the query
-	 * @param query The query from the user
-	 * @return A string containing the HTML-code for the resulting page, which shows the sentimental statistics related to the query
-	 */
-	private String statistics(String query) {
-		String[] nested = {
-				"value="+query,
-				"", 
-				"", 
-				"checked",
-				"<p>Statistics about: '"+ query +"'</p>"
-		};
-		String page = readFile("webFrondEnd/mainPage.html", nested);
-		return page;
-	}
 	
 	private String readFile(String file, String[] args) {
 		String result = "";

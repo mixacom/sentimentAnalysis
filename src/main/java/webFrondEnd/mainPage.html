@@ -10,15 +10,43 @@
    
    
    <style>
-		body {
-		    background-color: linen;
-		    padding: 5%;
-		    margin: 0;
-		    text-align: center;
-		    color: #555;
+		#top {
+			background-color: black;
+			margin: 0px;
+			padding: 0px;
+			width: 100%;
+			height: 10%;
+			position: absolute;
+			border-top: 5px solid yellow;
+			border-bottom: 5px solid yellow;
 		}
-		h1 {
+		#top p {
+			margin: 0px;
+			padding: 5px;
+			font-size: 30px;
+			color: silver;
+			float: left;
+			text-shadow: 2px 0 0 #DDD;
+		}
+		html {
+			padding: 0px;
+			margin: 0px;
 			font-family: Verdana, sans-serif;
+			background: #EEE;
+			height: 100%;
+		}
+		body {
+		    padding: 0px;
+		    margin: 0px;
+		    color: #555;
+		    height: 100%;
+		}
+		#mainContent {
+			padding-top: 5%;
+			text-align: center;
+		}
+		#mainContent h1 {
+			color: black;
 			margin-top :0;
 		}
 		input[type='text'] {
@@ -31,13 +59,18 @@
 			margin-left: 15px;
 		}
 		#results {
-			width: 100%;
+			width: 80%;
+			margin: auto;
 			margin-top: 5%;
+			text-align: left;
+			margin-bottom: 50px;
+			color: #666;
 		}
 		.singleResult {
 			border: solid 1px gray;
 			margin-top: 2px;
 			width: 100%;
+			box-shadow: 3px 3px 2px #888888;
 		}
 		.singleResult:hover {
 			border-color: black;
@@ -49,22 +82,90 @@
 			float: right;
 		}
 		#results th {
-			border: solid 5px white;
-			border-bottom: none;
+			border-bottom: 2px solid yellow;
 		}
+		#footer {
+			position: relative;
+			bottom:0px;
+			width:100%;
+			background-color: black;
+			text-align: center;
+		}
+		#footer p {
+			margin: 0px;
+			padding: 5px;
+			font-size: 10px;
+			color: silver;
+			border-top: 2px solid yellow;
+			border-bottom: 2px solid yellow;
+		}
+		
+
+		.submitButton {
+			-moz-box-shadow: 0px 1px 0px 0px #fff6af;
+			-webkit-box-shadow: 0px 1px 0px 0px #fff6af;
+			box-shadow: 0px 1px 0px 0px #fff6af;
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffec64), color-stop(1, #ffab23));
+			background:-moz-linear-gradient(top, #ffec64 5%, #ffab23 100%);
+			background:-webkit-linear-gradient(top, #ffec64 5%, #ffab23 100%);
+			background:-o-linear-gradient(top, #ffec64 5%, #ffab23 100%);
+			background:-ms-linear-gradient(top, #ffec64 5%, #ffab23 100%);
+			background:linear-gradient(to bottom, yellow 5%, black 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffec64', endColorstr='#ffab23',GradientType=0);
+			background-color:#ffec64;
+			-moz-border-radius:6px;
+			-webkit-border-radius:6px;
+			border-radius:6px;
+			border:1px solid #ffaa22;
+			display:inline-block;
+			cursor:pointer;
+			color:#DDD;
+			font-family:arial;
+			font-size:15px;
+			font-weight:bold;
+			padding:6px 24px;
+			text-decoration:none;
+			text-shadow:0px 1px 0px black;
+		}
+		.submitButton:hover {
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffab23), color-stop(1, #ffec64));
+			background:-moz-linear-gradient(top, #ffab23 5%, #ffec64 100%);
+			background:-webkit-linear-gradient(top, #ffab23 5%, #ffec64 100%);
+			background:-o-linear-gradient(top, #ffab23 5%, #ffec64 100%);
+			background:-ms-linear-gradient(top, #ffab23 5%, #ffec64 100%);
+			background:linear-gradient(to bottom, yellow 5%, #222 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffab23', endColorstr='#ffec64',GradientType=0);
+			background-color:#ffab23;
+		}
+		.submitButton:active {
+			position:relative;
+			top:1px;
+		}
+
+		
 	</style>
 </head>
 <body>
-	<h1>Twitter Sentiment Analysis</h1>
-	<form action="">
-	  <input type="text" name="query" placeholder="Type your query" [#nested]><input type="submit" value="Search">
-	  <br />
-	  <input type="radio" name="type" value="positive" [#nested]>Get positive tweets
-	  <input type="radio" name="type" value="negative" [#nested]>Get negative tweets
-	  <input type="radio" name="type" value="statistics" [#nested]>Get sentimental statistics
-	</form>
-	<table id="results">
-		[#nested]
-	</table>
+	<div id="top">
+		<p style="width: 65%">2ID26: Web information retrieval and data mining</p> 
+		<p style="text-align: right; width: 29%; float: right;">Twitter Sentiment Analysis</p>
+	</div>
+	
+	<div id="mainContent">
+		<h1 style="clear: both; text-shadow: 2px 0 0 yellow">Twitter Sentiment Analysis</h1>
+		<form action="">
+		  <input type="text" name="query" placeholder="Type your query" [#nested]><input type="submit" class="submitButton" value="Search">
+		  <br />
+		  <input type="radio" name="type" value="positive" [#nested]>Get positive tweets
+		  <input type="radio" name="type" value="negative" [#nested]>Get negative tweets
+		</form>
+		<table id="results">
+			[#nested]
+		</table>
+	</div>
+	
+	<div id="footer">
+		<p>Emin Alasgarov - Mikhail Evchenko - Wilco van Leeuwen - Xuming Meng - Zhang Yangfengfan</p>
+	</div>
 </body>
 </html>
