@@ -35,9 +35,8 @@ public class TweetController {
 	 * @return A string containing the HTML-code for the resulting page, which shows the most positive tweets related to the query
 	 */
 	private String getPositiveTweets(String query) {
-		// Get the relevant tweets (now using stub-data)
-		//Tweet[] relavantTweets = {new Tweet("John", new Date(), "Some interesting tweet"), new Tweet("Joe", new Date(), "Another very interesting tweet")};
-		Tweet[] relavantTweets = {new Tweet("test"), new Tweet("Wat is dit"), new Tweet("test"), new Tweet("Wat is dit"), new Tweet("test"), new Tweet("Wat is dit")};
+		Tweet[] relavantTweets = {new Tweet("phone calls from my Nonna are the best always when I need them most she calls", "RomanNegrette", "Mon Sep 29"), new Tweet("RT phone calls from my Nonna are the best always when I need them most she calls", "AshSoto105", "Mon Sep 29"), new Tweet("inlove with Sam smiths station on pandora", "stillakid99_", "Mon Sep 29"), new Tweet("I so badly want to have a normal conversation with you again", "kaitlynann2597", "Mon Sep 29")};
+		
 		// Show the tweets in html code
 		// TODO: Refactor the view-components out of this controller
 		String tweetHTML = "";
@@ -48,9 +47,9 @@ public class TweetController {
 							"<table class='singleResult'>" +
 								"<tr>" + 
 									"<td class='user'>" +
-									tweet.getScore() + 
+									tweet.getUser() + 
 									"</td><td class='date'>" +
-									tweet.getSentimentClass() + "</td>" +
+									tweet.getDate() + "</td>" +
 								"</tr><tr class='content'><td>" +
 									tweet.getContent() + "</td>" +
 								"</tr>" +

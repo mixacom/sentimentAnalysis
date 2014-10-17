@@ -1,20 +1,22 @@
 package mainApp;
 
-import ScoreSWN.Score;
-
 
 public class Tweet {
 
     private final String content;
     private double score;
     private sentimentClass sClass;
+    private final String user;
+    private final String date;
     
     public enum sentimentClass {
     	NEGATIVE, NEUTRAL, POSITIVE
     }
 
-    public Tweet(String content) {
+    public Tweet(String content, String user, String date) {
         this.content = content;
+        this.user = user;
+        this.date = date;
     }
 
 
@@ -41,6 +43,14 @@ public class Tweet {
     
     public void setSentimentClass(sentimentClass sClass) {
     	this.sClass = sClass;
+    }
+    
+    public String getUser() {
+    	return user;
+    }
+    
+    public String getDate() {
+    	return date;
     }
     
     public int getNumberOfWords() {
