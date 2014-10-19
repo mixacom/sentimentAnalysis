@@ -6,24 +6,32 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import normalization.Stemmer;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import edu.stanford.nlp.tagger.maxent.MaxentTagger;
+import preprocessing.UserInputProcessing;
 
 
 @RestController
 public class TweetController {
 
+	public static final MaxentTagger tagger = new MaxentTagger("res/gate-EN-twitter.model"); // should be in memory
+	
 	@RequestMapping("/")
     public String init(@RequestParam(value="query", required=false) String q, @RequestParam(value="type", required=false) String type) {
-        if (q == null) {
+		String preProcessedQuery = preprocessQuery(q);
+		if (q == null) {
 			String fileContent = readFile("webFrondEnd/mainPage.html", new String[]{"", "checked", "", ""});
 			return fileContent;
         } else {
         	if (type.equals("positive")) {
-        		return getPositiveTweets(q);
+        		return getPositiveTweets(preProcessedQuery);
         	} else {
-        		return getNegativeTweets(q);
+        		return getNegativeTweets(preProcessedQuery);
         	}
         }
     }
@@ -35,7 +43,7 @@ public class TweetController {
 	 * @return A string containing the HTML-code for the resulting page, which shows the most positive tweets related to the query
 	 */
 	private String getPositiveTweets(String query) {
-		Tweet[] relavantTweets = {new Tweet("phone calls from my Nonna are the best always when I need them most she calls", "RomanNegrette", "Mon Sep 29"), new Tweet("RT phone calls from my Nonna are the best always when I need them most she calls", "AshSoto105", "Mon Sep 29"), new Tweet("inlove with Sam smiths station on pandora", "stillakid99_", "Mon Sep 29"), new Tweet("I so badly want to have a normal conversation with you again", "kaitlynann2597", "Mon Sep 29")};
+		Tweet[] relavantTweets = {new Tweet(query, "user", "date")};//{new Tweet("phone calls from my Nonna are the best always when I need them most she calls", "RomanNegrette", "Mon Sep 29"), new Tweet("RT phone calls from my Nonna are the best always when I need them most she calls", "AshSoto105", "Mon Sep 29"), new Tweet("inlove with Sam smiths station on pandora", "stillakid99_", "Mon Sep 29"), new Tweet("I so badly want to have a normal conversation with you again", "kaitlynann2597", "Mon Sep 29")};
 		
 		// Show the tweets in html code
 		// TODO: Refactor the view-components out of this controller
@@ -85,6 +93,16 @@ public class TweetController {
 		return page;
 	}
 	
+	private String preprocessQuery(String query) {
+		// Preprocessing
+		String preProcessedQuery = UserInputProcessing.parsing(query);
+		
+		// Stemmer
+		Stemmer s = new Stemmer();
+		String stemmedQuery = s.normalization(preProcessedQuery);
+		
+		return stemmedQuery;
+	}
 	
 	private String readFile(String file, String[] args) {
 		String result = "";
