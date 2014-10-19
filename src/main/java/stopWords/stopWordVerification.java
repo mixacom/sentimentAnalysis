@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import constants.Components;
 import au.com.bytecode.opencsv.CSVWriter;
 
 public class stopWordVerification {
@@ -30,7 +31,7 @@ public class stopWordVerification {
 	private static HashMap<String, Integer> getTweetContents() throws IOException {
 		HashMap<String, Integer> wordCountMap = new HashMap<String, Integer>();
 		
-		BufferedReader br = new BufferedReader(new FileReader("/Users/wilcovanleeuwen/Github/sentimentAnalysis/src/main/java/backEnd/tweetContentt.txt"));
+		BufferedReader br = new BufferedReader(new FileReader(Components.getBaseFilePath() + "src/main/java/backEnd/tweetContentt.txt"));
 		String line;
 		while ((line = br.readLine()) != null) {
 			String[] words = line.split(" ");
@@ -70,7 +71,7 @@ public class stopWordVerification {
 	}
 	
 	public void writeFile() throws IOException {
-		CSVWriter csvWriter = new CSVWriter(new FileWriter("/Users/wilcovanleeuwen/Github/sentimentAnalysis/src/main/java/backEnd/stopWordVeri.csv"));
+		CSVWriter csvWriter = new CSVWriter(new FileWriter(Components.getBaseFilePath() + "src/main/java/backEnd/stopWordVeri.csv"));
 		for (String key : map.keySet()) {
 	    	String[] write = new String[2];
 	    	write[0] = key;
