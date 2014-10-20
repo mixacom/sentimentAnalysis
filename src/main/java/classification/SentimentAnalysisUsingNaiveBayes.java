@@ -172,7 +172,8 @@ public class SentimentAnalysisUsingNaiveBayes {
 	    SentimentAnalysisUsingNaiveBayes naiveBayes = new SentimentAnalysisUsingNaiveBayes(1000);
 	    naiveBayes.trainClassifier("humanLabeled.csv");
 		
-		Connection dbConnection = new MySqlConnection().getConnection();
+		MySqlConnection mySql = new MySqlConnection();
+	    Connection dbConnection = mySql.getConnection();
         try {
         	Statement tweetsFromDb = dbConnection.createStatement();
 			ResultSet resultSetTweets = tweetsFromDb.executeQuery("select text, id from tweet_info LIMIT 1");
@@ -192,6 +193,7 @@ public class SentimentAnalysisUsingNaiveBayes {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
         }
+        mySql.closeConnection();
 
     }
 }

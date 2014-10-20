@@ -633,7 +633,8 @@ public class Stemmer {
 	
 	
 	private void updateDatabaseFromPreprocessedToNormalized() {
-		Connection dbConnection = new MySqlConnection().getConnection();
+		MySqlConnection mySql = new MySqlConnection();
+		Connection dbConnection = mySql.getConnection();
         try {
         	Statement tweetsFromDb = dbConnection.createStatement();
 			ResultSet resultSetTweets = tweetsFromDb.executeQuery("select text, id from tweet_info WHERE id>1188087");
@@ -653,7 +654,8 @@ public class Stemmer {
         } catch (SQLException e) {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
-        }  
+        }
+        mySql.closeConnection();
 	}
 	
 	public static void main(String[] args) {

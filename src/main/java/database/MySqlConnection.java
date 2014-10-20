@@ -11,10 +11,10 @@ public class MySqlConnection {
 		try {
 	        Class.forName("com.mysql.jdbc.Driver");
 		// Class.forName("org.gjt.mm.mysql.Driver");
-		System.out.println("Success loading Mysql Driver!");
 		
 		this.connection = DriverManager.getConnection(
 				"jdbc:mysql://localhost:3306/opinius?useUnicode=true&characterEncoding=utf8", "root", "");
+		System.out.println("Started mySql-connection!");
 		} catch (ClassNotFoundException e) {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
@@ -48,5 +48,14 @@ public class MySqlConnection {
 	
 	public Connection getConnection() {
 		return connection;
+	}
+	
+	public void closeConnection() {
+		try {
+	        connection.close();
+	        System.out.println("Closed mySql-connection!");
+        } catch (SQLException e) {
+	        e.printStackTrace();
+        }
 	}
 }

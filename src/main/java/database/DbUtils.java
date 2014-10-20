@@ -21,7 +21,7 @@ public class DbUtils {
         } catch (SQLException e) {
 	        e.printStackTrace();
         }
-    
+        dbConnection.closeConnection();
 		return tweetContent;
 	}
 }

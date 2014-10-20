@@ -17,10 +17,8 @@ public class Main {
         for (int word : similarity.keySet()) {
             System.out.println("Document " + word + "'s similarity with query is " + similarity.get(word));
         }
-        return similarity;
-//    
-        
-       
+        dbConnection.closeConnection();
+        return similarity;  
     }
     public static void main(String[] args) throws IOException {
 	    Main.cosineSimilarity("people_NNS");
