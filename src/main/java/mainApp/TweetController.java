@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import normalization.Stemmer;
 
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import database.DbUtils;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import preprocessing.UserInputProcessing;
+import vectorSpace.Main;
 
 
 @RestController
@@ -23,15 +27,19 @@ public class TweetController {
 	
 	@RequestMapping("/")
     public String init(@RequestParam(value="query", required=false) String q, @RequestParam(value="type", required=false) String type) {
-		String preProcessedQuery = preprocessQuery(q);
+		String normolizedQuery = q;
+		if (q != "" && q != null) {
+			Stemmer stemmer = new Stemmer();
+			normolizedQuery = stemmer.normalization(preprocessQuery(q));
+		}
 		if (q == null) {
 			String fileContent = readFile("webFrondEnd/mainPage.html", new String[]{"", "checked", "", ""});
 			return fileContent;
         } else {
         	if (type.equals("positive")) {
-        		return getPositiveTweets(preProcessedQuery);
+        		return getPositiveTweets(normolizedQuery, q);
         	} else {
-        		return getNegativeTweets(preProcessedQuery);
+        		return getNegativeTweets(normolizedQuery, q);
         	}
         }
     }
@@ -42,9 +50,19 @@ public class TweetController {
 	 * @param query The query from the user
 	 * @return A string containing the HTML-code for the resulting page, which shows the most positive tweets related to the query
 	 */
-	private String getPositiveTweets(String query) {
-		Tweet[] relavantTweets = {new Tweet(query, "user", "date")};//{new Tweet("phone calls from my Nonna are the best always when I need them most she calls", "RomanNegrette", "Mon Sep 29"), new Tweet("RT phone calls from my Nonna are the best always when I need them most she calls", "AshSoto105", "Mon Sep 29"), new Tweet("inlove with Sam smiths station on pandora", "stillakid99_", "Mon Sep 29"), new Tweet("I so badly want to have a normal conversation with you again", "kaitlynann2597", "Mon Sep 29")};
-		
+	private String getPositiveTweets(String normolizedQuery, String query) {
+		ArrayList<Tweet> relavantTweets = new ArrayList<Tweet>();
+		try {
+			 HashMap<Integer, Float> similarityMap = Main.cosineSimilarity(normolizedQuery);
+			 for (int id : similarityMap.keySet()) {
+				 relavantTweets.add(new Tweet(DbUtils.getTweetContentById(id), "score: " + similarityMap.get(id), "date"));
+		     }
+        } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+        }
+		//Tweet[] relavantTweets = {new Tweet(query, "user", "date")};//{new Tweet("phone calls from my Nonna are the best always when I need them most she calls", "RomanNegrette", "Mon Sep 29"), new Tweet("RT phone calls from my Nonna are the best always when I need them most she calls", "AshSoto105", "Mon Sep 29"), new Tweet("inlove with Sam smiths station on pandora", "stillakid99_", "Mon Sep 29"), new Tweet("I so badly want to have a normal conversation with you again", "kaitlynann2597", "Mon Sep 29")};
+		//relavantTweets.add(new Tweet("","",""));
 		// Show the tweets in html code
 		// TODO: Refactor the view-components out of this controller
 		String tweetHTML = "";
@@ -82,7 +100,7 @@ public class TweetController {
 	 * @param query The query from the user
 	 * @return A string containing the HTML-code for the resulting page, which shows the most negative tweets related to the query
 	 */
-	private String getNegativeTweets(String query) {
+	private String getNegativeTweets(String normolizedQuery, String query) {
 		String[] nested = {
 				"value="+query,
 				"", 
@@ -98,10 +116,10 @@ public class TweetController {
 		String preProcessedQuery = UserInputProcessing.parsing(query);
 		
 		// Stemmer
-		Stemmer s = new Stemmer();
-		String stemmedQuery = s.normalization(preProcessedQuery);
+		//Stemmer s = new Stemmer();
+		//String stemmedQuery = s.normalization(preProcessedQuery);
 		
-		return stemmedQuery;
+		return preProcessedQuery;//stemmedQuery;
 	}
 	
 	private String readFile(String file, String[] args) {

@@ -35,9 +35,14 @@ Release 4
 */
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashSet;
 
 import constants.Components;
+import database.MySqlConnection;
 
 /**
 * Stemmer, implementing the Porter Stemming Algorithm
@@ -53,7 +58,6 @@ public class Stemmer {
 	i_end, /* offset to end of stemmed word */
 	j, k;
 	private static final int INC = 50;
-	private static final boolean String = false;
 	HashSet<String> sentiWordCollection;
 	private boolean listInMemory = false;
 
@@ -626,9 +630,34 @@ public class Stemmer {
 		return res.toString();
 	}
 
+	
+	
+	private void updateDatabaseFromPreprocessedToNormalized() {
+		Connection dbConnection = new MySqlConnection().getConnection();
+        try {
+        	Statement tweetsFromDb = dbConnection.createStatement();
+			ResultSet resultSetTweets = tweetsFromDb.executeQuery("select text, id from tweet_info WHERE id>1188087");
+			
+			//get tweets from database and put into 
+			while (resultSetTweets.next()) {
+				int id = resultSetTweets.getInt(2);
+				String preProcessedTweet = resultSetTweets.getString(1);
+				preProcessedTweet = preProcessedTweet.replace("\"", "");
+				String normalizedTweet = this.normalization(preProcessedTweet);
+				
+				
+				Statement update = dbConnection.createStatement();
+				System.out.println("UPDATE tweet_info SET text=\"" + normalizedTweet + "\" WHERE id=" + id + ";");
+				update.executeUpdate("UPDATE tweet_info SET text=\"" + normalizedTweet + "\" WHERE id=" + id + ";");
+			}
+        } catch (SQLException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+        }  
+	}
+	
 	public static void main(String[] args) {
-	    Stemmer s = new Stemmer();
-	    System.out.println(s.normalization("This_VBZ is_BV a_KJ test_OK tweet_RT testing_JH"));
-	    
+		Stemmer s = new Stemmer();
+		s.updateDatabaseFromPreprocessedToNormalized();
     }
 }
