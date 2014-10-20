@@ -7,42 +7,49 @@
    <meta name="description" content="Get the most positive or negative tweets about a subject" />
    <meta name="keywords" content="tweet, twitter, sentiment analysis, positive, negative, statistics" />
    <title>Twitter Sentiment Analysis</title>
+   <link href='http://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900' rel='stylesheet' type='text/css'>
    
    
    <style>
+		html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,dl,dt,dd,ol,nav ul,nav li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
+		article, aside, details, figcaption, figure,footer, header, hgroup, menu, nav, section {display: block;}
+		ol,ul{list-style:none;margin:0;padding:0;}
+		blockquote,q{quotes:none;}
+		blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
+		table{border-collapse:collapse;border-spacing:0;}   
+   
+   		body {
+		    padding: 0px;
+		    margin: 0px;
+		    background-color: #ff8145;
+		    height: 100%;
+			font-family: 'Raleway', sans-serif;
+			color: #fff; 
+		}
 		#top {
-			background-color: black;
+			background-color: #203040; 
 			margin: 0px;
-			padding: 0px;
+			padding: 0 5% 0 5%; 
 			width: 100%;
 			height: 50px;
 			position: absolute;
-			border-top: 5px solid yellow;
-			border-bottom: 5px solid yellow;
+			border-top: 5px solid #e06018;
+			border-bottom: 5px solid #e06018;
 		}
 		#top p {
 			margin: 0px;
 			padding: 5px;
 			font-size: 30px;
-			color: silver;
+			color: #fff;
 			float: left;
-			text-shadow: 2px 0 0 #DDD;
 		}
 		html {
 			padding: 0px;
 			margin: 0px;
-			font-family: Verdana, sans-serif;
-			background: #EEE;
 			height: 100%;
 		}
-		body {
-		    padding: 0px;
-		    margin: 0px;
-		    color: #555;
-		    height: 100%;
-		}
 		#mainContent {
-			padding-top: 5%;
+			padding-top: 9%;
 			text-align: center;
 		}
 		#mainContent h1 {
@@ -52,6 +59,8 @@
 		input[type='text'] {
 			width: 40%;
 			margin-right: 15px;
+			color: #BBB;  
+			height: 25px; 
 		}
 		input[type='radio'] {
 			margin-top: 10px;
@@ -86,7 +95,7 @@
 			font-size: 10px;
 		}
 		#results th {
-			border-bottom: 2px solid yellow;
+			border-bottom: 2px solid #e06018;
 		}
 		#footer {
 			position: fixed;
@@ -100,63 +109,60 @@
 			padding: 5px;
 			font-size: 10px;
 			color: silver;
-			border-top: 2px solid yellow;
-			border-bottom: 2px solid yellow;
+			border-top: 2px solid #e06018;
+			border-bottom: 2px solid #e06018;
 		}
 		
-
 		.submitButton {
-			-moz-box-shadow: 0px 1px 0px 0px #fff6af;
-			-webkit-box-shadow: 0px 1px 0px 0px #fff6af;
-			box-shadow: 0px 1px 0px 0px #fff6af;
-			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffec64), color-stop(1, #ffab23));
-			background:-moz-linear-gradient(top, #ffec64 5%, #ffab23 100%);
-			background:-webkit-linear-gradient(top, #ffec64 5%, #ffab23 100%);
-			background:-o-linear-gradient(top, #ffec64 5%, #ffab23 100%);
-			background:-ms-linear-gradient(top, #ffec64 5%, #ffab23 100%);
-			background:linear-gradient(to bottom, yellow 5%, black 100%);
-			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffec64', endColorstr='#ffab23',GradientType=0);
-			background-color:#ffec64;
-			-moz-border-radius:6px;
-			-webkit-border-radius:6px;
-			border-radius:6px;
-			border:1px solid #ffaa22;
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #7accc8), color-stop(1, #7accc8));
+			background:-moz-linear-gradient(top, #7accc8 5%, #7accc8 100%);
+			background:-webkit-linear-gradient(top, #7accc8 5%, #7accc8 100%);
+			background:-o-linear-gradient(top, #7accc8 5%, #7accc8 100%);
+			background:-ms-linear-gradient(top, #7accc8 5%, #7accc8 100%);
+			background:linear-gradient(to bottom, #7accc8 5%, 7accc8 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#7accc8', endColorstr='#7accc8',GradientType=0);
+			background-color: #7accc8;
+			-moz-border-radius: 1px;
+			-webkit-border-radius: 1px;
+			border-radius: 1px;
+			border-left: 1px solid #fff;
+			border-top: 1px solid #fff;
+			border-right: 1px solid #fff;
+			border-bottom: 2px solid #45A39E; 
 			display:inline-block;
 			cursor:pointer;
-			color:#DDD;
+			color:#fff;
 			font-family:arial;
-			font-size:15px;
-			font-weight:bold;
-			padding:6px 24px;
+			font-size: 1.1em;;
+			padding: 3px 8px;
 			text-decoration:none;
-			text-shadow:0px 1px 0px black;
 		}
+
 		.submitButton:hover {
-			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffab23), color-stop(1, #ffec64));
-			background:-moz-linear-gradient(top, #ffab23 5%, #ffec64 100%);
-			background:-webkit-linear-gradient(top, #ffab23 5%, #ffec64 100%);
-			background:-o-linear-gradient(top, #ffab23 5%, #ffec64 100%);
-			background:-ms-linear-gradient(top, #ffab23 5%, #ffec64 100%);
-			background:linear-gradient(to bottom, yellow 5%, #222 100%);
-			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffab23', endColorstr='#ffec64',GradientType=0);
-			background-color:#ffab23;
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #60c2bd), color-stop(1, #60c2bd));
+			background:-moz-linear-gradient(top, #60c2bd 5%, #60c2bd 100%);
+			background:-webkit-linear-gradient(top, #60c2bd 5%, #60c2bd 100%);
+			background:-o-linear-gradient(top, #60c2bd 5%, #60c2bd 100%);
+			background:-ms-linear-gradient(top, #60c2bd 5%, #60c2bd 100%);
+			background:linear-gradient(to bottom, #60c2bd 5%, #60c2bd 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#60c2bd', endColorstr='#60c2bd',GradientType=0);
+			background-color:#60c2bd;
 		}
 		.submitButton:active {
 			position:relative;
 			top:1px;
 		}
 
-		
 	</style>
 </head>
 <body>
 	<div id="top">
-		<p style="width: 65%">2ID26: Web information retrieval and data mining</p> 
-		<p style="text-align: right; width: 29%; float: right;">Twitter Sentiment Analysis</p>
+		<p>2ID26: Web information retrieval and data mining</p> 
+		<p style="float: right; margin-right: 10%; ">Twitter Sentiment Analysis</p> 
 	</div>
 	
 	<div id="mainContent">
-		<h1 style="clear: both; text-shadow: 2px 0 0 yellow">Twitter Sentiment Analysis</h1>
+		<h1 style="clear: both; font-size: 1.8em; color: #fff; margin-bottom: 10px; ">Twitter Sentiment Analysis</h1>
 		<form action="">
 		  <input type="text" name="query" placeholder="Type your query" [#nested]><input type="submit" class="submitButton" value="Search">
 		  <br />
