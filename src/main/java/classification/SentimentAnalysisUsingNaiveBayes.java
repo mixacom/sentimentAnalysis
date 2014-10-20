@@ -174,15 +174,16 @@ public class SentimentAnalysisUsingNaiveBayes {
 		
 		MySqlConnection mySql = new MySqlConnection();
 	    Connection dbConnection = mySql.getConnection();
-        try {
+        int classified, id;
+	    try {
         	Statement tweetsFromDb = dbConnection.createStatement();
-			ResultSet resultSetTweets = tweetsFromDb.executeQuery("select text, id from tweet_info LIMIT 1");
+			ResultSet resultSetTweets = tweetsFromDb.executeQuery("select text, id from tweet_info LIMIT 100000");
 			
 			//get tweets from database and put into 
 			while (resultSetTweets.next()) {
 				String content = resultSetTweets.getString(1);
-				int classified = naiveBayes.classify(content);
-				int id = resultSetTweets.getInt(2);
+				classified = naiveBayes.classify(content);
+				id = resultSetTweets.getInt(2);
 				
 				System.out.println("UPDATE tweet_info SET naiveBayes=" + classified + " WHERE id=" + id + ";");
 				
