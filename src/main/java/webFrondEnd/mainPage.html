@@ -174,11 +174,25 @@
 		  <input type="radio" name="type" value="negative" [#nested]>Get negative tweets
 		</form>
 		
-		<div class="positiveTweets">
-			<table id="results">
-				[#nested]
+		
+		<table id="results">
+			<table width="100%">
+				<tr>
+					<td>
+						Tweets found: ...
+					</td>
+					<td>
+						Positive tweets: ...
+					</td>
+					<td>
+						Negative tweets: ....
+					</td>
+				</tr>
 			</table>
-		</div>
+			<div class="positiveTweets">
+				[#nested]
+			</div>
+		</table>
 	</div>
 	
 	<div id="footer">

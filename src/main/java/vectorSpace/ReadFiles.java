@@ -3,7 +3,6 @@ package vectorSpace;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +27,7 @@ public class ReadFiles {
     private static HashMap<Integer, HashMap<String, Float>> allTheTf = new HashMap<Integer, HashMap<String, Float>>();
     private static HashMap<Integer, HashMap<String, Float>> allTheTfIdf = new HashMap<Integer, HashMap<String, Float>>();
     private static HashMap<String, Float> allTheIdf = new HashMap<String, Float>();
+    public static HashMap<String, Float> allTheDf = new HashMap<String, Float>();
 
     public static List<Integer> readDirs(HashMap<Integer, String> tweets) throws FileNotFoundException, IOException {
 //        try {
@@ -238,10 +238,12 @@ public class ReadFiles {
         return tf;	
     }
        
-    public static HashMap<Integer , Float> similarity(HashMap<Integer, String> tweets, String query) throws IOException{
-       //try to put query in to hashmap
+    public static HashMap<Integer , Float> similarity(HashMap<Integer, String> tweets, String query) throws IOException{ 
+    	//try to put query in to hashmap
 //    	tweets.put(0, query);
+    	
     	HashMap<Integer, HashMap<String, Float>> tfidf = new HashMap<Integer, HashMap<String, Float>>();
+    	
     	if (allTheTfIdf.isEmpty()) {
     		System.out.print("allTheTfIdf is empty");
         	tfidf = ReadFiles.tfidf(tweets);
@@ -249,7 +251,9 @@ public class ReadFiles {
         else{
         	tfidf = allTheTfIdf;
         }
-        int tfhashSize=tfidf.size();
+    	System.out.println("test");
+        
+    	int tfhashSize=tfidf.size();
         List<Integer> key = fileList;//存储各个文档名的List
         HashMap<Integer, Float> similarity = new HashMap<Integer, Float>();
         
@@ -340,5 +344,115 @@ public class ReadFiles {
 
         return sortedMap;
     }
+    
+    public static  HashMap<String, Float>  queryExpansion(HashMap<Integer, String> tweets, HashMap<Integer, Float> similarity ) throws IOException {
+		List<String[]> tweetsContentList = new ArrayList<String[]>();
+		HashMap<String, Float> wordAndDf = new HashMap<String, Float>();
+		//traverse the similarity to get the tweets of a relevent
+    	for(Integer tweetsID: similarity.keySet()){
+    	tweetsContentList.add(cutQuery(tweets.get(tweetsID)));	
+    	}
+    	//traverse these tweets and find their words' DF
+    	for(String[] Content: tweetsContentList){
+    		for(String word: Content){
+    			
+    			if (allTheDf.get(word)==null) {
+					continue;
+				}
+    			wordAndDf.put(word, allTheDf.get(word));
+    			
+    			wordAndDf = sortByComparatorQE(wordAndDf, false);
+    		}
+    	}
+    	
+    	for (String word: wordAndDf.keySet()) {
+			System.out.println(word+"\n");
+			System.out.println(wordAndDf.get(word));
+		}
+    	
+    	
+    	
+    	
+    	return wordAndDf;
+		
+	}
         
+    
+    public static HashMap<String, Float> sortByComparatorQE(HashMap<String, Float> unsortMap, final boolean order)
+    {
+    	
+        List<Entry<String, Float>> list = new LinkedList<Entry<String, Float>>(unsortMap.entrySet());
+
+        // Sorting the list based on values
+        Collections.sort(list, new Comparator<Entry<String, Float>>()
+        {
+            public int compare(Entry<String, Float> o1,
+                    Entry<String, Float> o2)
+            {
+                if (order)
+                {
+                    return o1.getValue().compareTo(o2.getValue());
+                }
+                else
+                {
+                    return o2.getValue().compareTo(o1.getValue());
+
+                }
+            }
+        });
+
+        // Maintaining insertion order with the help of LinkedList
+        HashMap<String, Float> sortedMap = new LinkedHashMap<String, Float>();
+        
+        for (Entry<String, Float> entry : list)
+        {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+        
+        return sortedMap;
+    }
+    
+    public static HashMap<String, Float> df(HashMap<Integer, String> tweets)
+    {
+    	HashMap<String, Float> df = new HashMap<String, Float>();
+        List<String> located = new ArrayList<String>();
+        
+        float Dt = 1;
+        float D = allTheTf.size();
+        List<Integer> key = fileList;
+        Map<Integer, HashMap<String, Float>> tfInIdf = allTheTf;
+
+        for (int i = 0; i < D; i++) 
+        {
+            HashMap<String, Float> temp = tfInIdf.get(key.get(i));
+            
+            for (String word : temp.keySet()) 
+            {	
+                Dt = 1; //calculator
+                
+                if (!(located.contains(word))) 
+                {
+                    for (int k = 0; k < D; k++) 
+                    {
+                        if (k != i) 
+                        {
+                            HashMap<String, Float> temp2 = tfInIdf.get(key.get(k)); //get this file
+                            if (temp2.keySet().contains(word)) 
+                            {
+                                located.add(word);
+                                Dt = Dt + 1;
+                                continue;
+                            }
+                        }
+                    }
+                    df.put(word, Dt);
+//                    System.out.print(df.get(word));
+//                    System.out.print(word);
+                }
+            }
+        }
+        allTheDf = df;
+        return df;	     
+    }
+    
     }
