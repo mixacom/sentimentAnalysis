@@ -137,7 +137,7 @@ public class DecissionTreeClassification {
 		String[] nextLine;
 		while ((nextLine = testSetFile.readNext()) != null) {
 			if (nextLine[0] != null) {
-				Tweet tweet = new Tweet(nextLine[0], "", "");
+				Tweet tweet = new Tweet(nextLine[0], "", -999);
 				if (nextLine[1].equals("3")) {
 					tweet.setSentimentClass(sentimentClass.POSITIVE);
 				} else if (nextLine[1].equals("2")) {

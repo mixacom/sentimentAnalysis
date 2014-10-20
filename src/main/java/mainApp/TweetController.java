@@ -55,7 +55,7 @@ public class TweetController {
 		try {
 			 HashMap<Integer, Float> similarityMap = Main.cosineSimilarity(normolizedQuery);
 			 for (int id : similarityMap.keySet()) {
-				 relavantTweets.add(new Tweet(DbUtils.getTweetContentById(id), "score: " + similarityMap.get(id), "date"));
+				 relavantTweets.add(new Tweet(DbUtils.getTweetContentById("original_text", id), "score: " + similarityMap.get(id), id));
 		     }
         } catch (IOException e) {
 	        // TODO Auto-generated catch block
@@ -65,21 +65,27 @@ public class TweetController {
 		//relavantTweets.add(new Tweet("","",""));
 		// Show the tweets in html code
 		// TODO: Refactor the view-components out of this controller
+		
+		ArrayList<ArrayList<Tweet>> tweetsBySentiment = DbUtils.getTweetsBySentiment(relavantTweets);
+		ArrayList<Tweet> positiveTweets = tweetsBySentiment.get(2);
+		ArrayList<Tweet> neutralTweets = tweetsBySentiment.get(1);
+		ArrayList<Tweet> negativeTweets = tweetsBySentiment.get(0);
+		
 		String tweetHTML = "";
-		for (Tweet tweet: relavantTweets) {
+		for (Tweet tweet: positiveTweets) {
 			tweetHTML += 
 					"<tr>" +
-						"<td>" +
-							"<table class='singleResult'>" +
-								"<tr>" + 
-									"<td class='user'>" +
-									tweet.getUser() + 
-									"</td><td class='date'>" +
-									tweet.getDate() + "</td>" +
-								"</tr><tr class='content'><td>" +
-									tweet.getContent() + "</td>" +
-								"</tr>" +
-							"</table>" +
+						"<td>" +	
+								"<table class='singleResult'>" +
+									"<tr>" + 
+										"<td class='user'>" +
+										tweet.getUser() + 
+										"</td><td class='date'>" +
+										tweet.getId() + "</td>" +
+									"</tr><tr class='content'><td>" +
+										tweet.getContent() + "</td>" +
+									"</tr>" +
+								"</table>" +
 						"</td>" +
 					"</tr>"; 
 		}

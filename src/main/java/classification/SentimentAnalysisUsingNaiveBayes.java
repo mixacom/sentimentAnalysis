@@ -177,7 +177,7 @@ public class SentimentAnalysisUsingNaiveBayes {
         int classified, id;
 	    try {
         	Statement tweetsFromDb = dbConnection.createStatement();
-			ResultSet resultSetTweets = tweetsFromDb.executeQuery("select text, id from tweet_info LIMIT 100000");
+			ResultSet resultSetTweets = tweetsFromDb.executeQuery("select text, id from tweet_info WHERE id > 333157 LIMIT " + mySql.LIMIT);
 			
 			//get tweets from database and put into 
 			while (resultSetTweets.next()) {

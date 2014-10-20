@@ -637,7 +637,7 @@ public class Stemmer {
 		Connection dbConnection = mySql.getConnection();
         try {
         	Statement tweetsFromDb = dbConnection.createStatement();
-			ResultSet resultSetTweets = tweetsFromDb.executeQuery("select text, id from tweet_info WHERE id>1188087");
+			ResultSet resultSetTweets = tweetsFromDb.executeQuery("select text, id from tweet_info WHERE id>1188087 LIMIT "+ mySql.LIMIT);
 			
 			//get tweets from database and put into 
 			while (resultSetTweets.next()) {

@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class MySqlConnection {
 	
 	Connection connection;
-	
+	public final int LIMIT = 20000;
 	public MySqlConnection() {
 		try {
 	        Class.forName("com.mysql.jdbc.Driver");
@@ -29,7 +29,7 @@ public class MySqlConnection {
 		
 		try {
 			Statement statement = connection.createStatement();
-			ResultSet resultSet = statement.executeQuery("select * from tweet_info LIMIT 4000");
+			ResultSet resultSet = statement.executeQuery("select * from tweet_info LIMIT "+LIMIT);
 			
 			//get tweets from database and put into 
 			while (resultSet.next()) {

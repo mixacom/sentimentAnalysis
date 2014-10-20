@@ -7,16 +7,16 @@ public class Tweet {
     private double score;
     private sentimentClass sClass;
     private final String user;
-    private final String date;
+    private final int id;
     
     public enum sentimentClass {
     	NEGATIVE, NEUTRAL, POSITIVE
     }
 
-    public Tweet(String content, String user, String date) {
+    public Tweet(String content, String user, int id) {
         this.content = content;
         this.user = user;
-        this.date = date;
+        this.id = id;
     }
 
 
@@ -49,8 +49,8 @@ public class Tweet {
     	return user;
     }
     
-    public String getDate() {
-    	return date;
+    public int getId() {
+    	return id;
     }
     
     public int getNumberOfWords() {
