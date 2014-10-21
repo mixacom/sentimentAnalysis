@@ -1,5 +1,6 @@
 package database;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,15 +9,19 @@ import java.util.ArrayList;
 import mainApp.Tweet;
 
 public class DbUtils {
-	public static String getTweetContentById(String content, int id) {
+	private Connection c;
+	public DbUtils(Connection c) {
+	    this.c = c;
+    }
+	
+	public String getTweetContentById(String content, int id) {
 		String tweetContent = "Not available";
 		
-		MySqlConnection dbConnection = new MySqlConnection();
 		Statement statement;
         try {
-	        statement = dbConnection.getConnection().createStatement();
+	        statement = c.createStatement();
         
-			ResultSet resultSet = statement.executeQuery("SELECT " + content + " FROM tweet_info WHERE id="+id + " LIMIT " + dbConnection.LIMIT);
+			ResultSet resultSet = statement.executeQuery("SELECT " + content + " FROM tweet_info WHERE id="+id + " LIMIT " + MySqlConnection.LIMIT);
 			
 			while (resultSet.next()) {
 				tweetContent = resultSet.getString(1);
@@ -24,17 +29,16 @@ public class DbUtils {
         } catch (SQLException e) {
 	        e.printStackTrace();
         }
-        dbConnection.closeConnection();
-		return tweetContent;
+        return tweetContent;
 	}
 	
-	public static ArrayList<ArrayList<Tweet>> getTweetsBySentiment(ArrayList<Tweet> tweets) {
+	public ArrayList<ArrayList<Tweet>> getTweetsBySentiment(ArrayList<Tweet> tweets) {
 		ArrayList<Tweet> negativeTweets = new ArrayList<Tweet>();
 		ArrayList<Tweet> neutralTweets = new ArrayList<Tweet>();
 		ArrayList<Tweet> positiveTweets = new ArrayList<Tweet>();
 		
 		for (Tweet tweet : tweets) {
-			String classified = DbUtils.getTweetContentById("final_res", tweet.getId());
+			String classified = this.getTweetContentById("final_res", tweet.getId());
 			try {
 				int sentimentInt = Integer.parseInt(classified);
 				if (sentimentInt == 0) {

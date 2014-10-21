@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class MySqlConnection {
 	
 	Connection connection;
-	public final int LIMIT = 1000;
+	public final static int LIMIT = 15000;
 	public MySqlConnection() {
 		try {
 	        Class.forName("com.mysql.jdbc.Driver");
@@ -14,7 +14,11 @@ public class MySqlConnection {
 		
 		this.connection = DriverManager.getConnection(
 				"jdbc:mysql://localhost:3306/opinius?useUnicode=true&characterEncoding=utf8", "root", "");
-		
+//		StackTraceElement[] stackTraceElements =Thread.currentThread().getStackTrace();
+//		for (StackTraceElement el : stackTraceElements) {
+//			System.out.println(el.toString());
+//		}
+		System.out.println("Database connection made");
 		//System.out.println("Database connection is made");
 		} catch (ClassNotFoundException e) {
 	        // TODO Auto-generated catch block
@@ -51,7 +55,7 @@ public class MySqlConnection {
 	public void closeConnection() {
 		try {
 	        connection.close();
-	       // System.out.println("Database connection is closed");
+	        System.out.println("Database connection is closed");
 	    } catch (SQLException e) {
 	        e.printStackTrace();
         }

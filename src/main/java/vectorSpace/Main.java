@@ -9,8 +9,8 @@ public class Main {
 
     public final HashMap<Integer, String> tweetsMap;
     private final MySqlConnection dbConnection;
-    public Main() {
-    	dbConnection = new MySqlConnection();
+    public Main(MySqlConnection db) {
+    	dbConnection = db;
     	tweetsMap = dbConnection.mySqlConnection();
     }
     

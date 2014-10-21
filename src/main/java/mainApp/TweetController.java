@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import database.DbUtils;
+import database.MySqlConnection;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import preprocessing.UserInputProcessing;
 import stopWords.StopWord;
@@ -26,7 +27,9 @@ import vectorSpace.ReadFiles;
 public class TweetController {
 
 	public static final MaxentTagger tagger = new MaxentTagger("res/gate-EN-twitter.model"); // should be in memory
-	public final Main vectorSpace = new Main();
+	MySqlConnection connection = new MySqlConnection();
+	DbUtils dbUtils = new DbUtils(connection.getConnection());
+	public final Main vectorSpace = new Main(connection);
 	public Stemmer stemmer = new Stemmer();
 	public final ArrayList<String> stopwords = getTopStopWords(50);
 			
@@ -63,7 +66,7 @@ public class TweetController {
 		try {
 			 HashMap<Integer, Float> similarityMap = vectorSpace.cosineSimilarity(normolizedQuery);
 			 for (int id : similarityMap.keySet()) {
-				 relavantTweets.add(new Tweet(DbUtils.getTweetContentById("original_text", id), "Cosine similarity score: " + similarityMap.get(id), id));
+				 relavantTweets.add(new Tweet(dbUtils.getTweetContentById("original_text", id), "Cosine similarity score: " + similarityMap.get(id), id));
 		     }
 			 queryExpantion = addingQueryExpantion(similarityMap, "positive", query);
         } catch (IOException e) {
@@ -71,7 +74,7 @@ public class TweetController {
         }
 		
 		
-		ArrayList<ArrayList<Tweet>> tweetsBySentiment = DbUtils.getTweetsBySentiment(relavantTweets);
+		ArrayList<ArrayList<Tweet>> tweetsBySentiment = dbUtils.getTweetsBySentiment(relavantTweets);
 		ArrayList<Tweet> positiveTweets = tweetsBySentiment.get(2);
 		ArrayList<Tweet> neutralTweets = tweetsBySentiment.get(1);
 		ArrayList<Tweet> negativeTweets = tweetsBySentiment.get(0);
@@ -93,7 +96,7 @@ public class TweetController {
 											"<td class='user'>" +
 											tweet.getUser() + 
 											"</td><td class='date'>" +
-											"Tweet-id" + tweet.getId() + "</td>" +
+											"Tweet-id: " +  tweet.getId() + "</td>" +
 										"</tr><tr class='content'><td>" +
 											tweet.getContent() + "</td>" +
 										"</tr>" +
@@ -120,7 +123,7 @@ public class TweetController {
 											"<td class='user'>" +
 											tweet.getUser() + 
 											"</td><td class='date'>" +
-											tweet.getId() + "</td>" +
+											"Tweet-id: " + tweet.getId() + "</td>" +
 										"</tr><tr class='content'><td>" +
 											tweet.getContent() + "</td>" +
 										"</tr>" +
@@ -157,14 +160,14 @@ public class TweetController {
 		try {
 			 HashMap<Integer, Float> similarityMap = vectorSpace.cosineSimilarity(normolizedQuery);
 			 for (int id : similarityMap.keySet()) {
-				 relavantTweets.add(new Tweet(DbUtils.getTweetContentById("original_text", id), "Cosine similarity score: " + similarityMap.get(id), id));
+				 relavantTweets.add(new Tweet(dbUtils.getTweetContentById("original_text", id), "Cosine similarity score: " + similarityMap.get(id), id));
 		     }
 			 queryExpantion = addingQueryExpantion(similarityMap, "negative", query);
         } catch (IOException e) {
 	        e.printStackTrace();
         }
 		
-		ArrayList<ArrayList<Tweet>> tweetsBySentiment = DbUtils.getTweetsBySentiment(relavantTweets);
+		ArrayList<ArrayList<Tweet>> tweetsBySentiment = dbUtils.getTweetsBySentiment(relavantTweets);
 		ArrayList<Tweet> positiveTweets = tweetsBySentiment.get(2);
 		ArrayList<Tweet> neutralTweets = tweetsBySentiment.get(1);
 		ArrayList<Tweet> negativeTweets = tweetsBySentiment.get(0);
@@ -186,7 +189,7 @@ public class TweetController {
 											"<td class='user'>" +
 											tweet.getUser() + 
 											"</td><td class='date'>" +
-											"Tweet-id" + tweet.getId() + "</td>" +
+											"Tweet-id: " + tweet.getId() + "</td>" +
 										"</tr><tr class='content'><td>" +
 											tweet.getContent() + "</td>" +
 										"</tr>" +
@@ -212,7 +215,7 @@ public class TweetController {
 											"<td class='user'>" +
 											tweet.getUser() + 
 											"</td><td class='date'>" +
-											tweet.getId() + "</td>" +
+											"Tweet-id: " + tweet.getId() + "</td>" +
 										"</tr><tr class='content'><td>" +
 											tweet.getContent() + "</td>" +
 										"</tr>" +
