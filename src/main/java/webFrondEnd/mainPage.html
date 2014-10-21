@@ -179,6 +179,18 @@
 			margin-right: 2px;
 			margin-left: 2px;
 		}
+		
+		.queryExpention {
+			width: 85%;
+			margin: auto;
+			text-align: center;
+			margin-top: 25px;
+			margin-bottom : 100px;
+		}
+		.queryExpention p {
+			width: 32%;
+			float: left;
+		}
 
 	</style>
 </head>
@@ -197,6 +209,12 @@
 		  <input type="radio" name="type" value="negative" [#nested]>Get negative tweets
 		</form>
 		
+		<div class="queryExpention">
+				<h2 style="text-align: center; margin-bottom: 5px; border-bottom: 1px solid black;">
+					Query expantion suggestions:
+				</h2>
+				[#nested]
+		</div>
 		<table class="nav">
 				<tr>
 					<td>

@@ -18,12 +18,14 @@ import database.DbUtils;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import preprocessing.UserInputProcessing;
 import vectorSpace.Main;
+import vectorSpace.ReadFiles;
 
 
 @RestController
 public class TweetController {
 
 	public static final MaxentTagger tagger = new MaxentTagger("res/gate-EN-twitter.model"); // should be in memory
+	public final Main vectorSpace = new Main();
 	
 	@RequestMapping("/")
     public String init(@RequestParam(value="query", required=false) String q, @RequestParam(value="type", required=false) String type) {
@@ -33,7 +35,7 @@ public class TweetController {
 			normolizedQuery = stemmer.normalization(preprocessQuery(q));
 		}
 		if (q == null) {
-			String fileContent = readFile("webFrondEnd/mainPage.html", new String[]{"", "checked", "", "", ""});
+			String fileContent = readFile("webFrondEnd/mainPage.html", new String[]{"", "checked", "", "", "", "", "", "", ""});
 			return fileContent;
         } else {
         	if (type.equals("positive")) {
@@ -52,19 +54,17 @@ public class TweetController {
 	 */
 	private String getPositiveTweets(String normolizedQuery, String query) {
 		ArrayList<Tweet> relavantTweets = new ArrayList<Tweet>();
+		String queryExpantion = "";
 		try {
-			 HashMap<Integer, Float> similarityMap = Main.cosineSimilarity(normolizedQuery);
+			 HashMap<Integer, Float> similarityMap = vectorSpace.cosineSimilarity(normolizedQuery);
 			 for (int id : similarityMap.keySet()) {
 				 relavantTweets.add(new Tweet(DbUtils.getTweetContentById("original_text", id), "Cosine similarity score: " + similarityMap.get(id), id));
 		     }
+			 queryExpantion = addingQueryExpantion(similarityMap, "positive", query);
         } catch (IOException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
+	         e.printStackTrace();
         }
-		//Tweet[] relavantTweets = {new Tweet(query, "user", "date")};//{new Tweet("phone calls from my Nonna are the best always when I need them most she calls", "RomanNegrette", "Mon Sep 29"), new Tweet("RT phone calls from my Nonna are the best always when I need them most she calls", "AshSoto105", "Mon Sep 29"), new Tweet("inlove with Sam smiths station on pandora", "stillakid99_", "Mon Sep 29"), new Tweet("I so badly want to have a normal conversation with you again", "kaitlynann2597", "Mon Sep 29")};
-		//relavantTweets.add(new Tweet("","",""));
-		// Show the tweets in html code
-		// TODO: Refactor the view-components out of this controller
+		
 		
 		ArrayList<ArrayList<Tweet>> tweetsBySentiment = DbUtils.getTweetsBySentiment(relavantTweets);
 		ArrayList<Tweet> positiveTweets = tweetsBySentiment.get(2);
@@ -120,6 +120,7 @@ public class TweetController {
 				"value='"+query+"'",
 				"checked", 
 				"", 
+				queryExpantion,
 				"" + totalRelevantTweets,
 				"" + positiveTweets.size(),
 				"" + negativeTweets.size(),
@@ -137,11 +138,13 @@ public class TweetController {
 	 */
 	private String getNegativeTweets(String normolizedQuery, String query) {
 		ArrayList<Tweet> relavantTweets = new ArrayList<Tweet>();
+		String queryExpantion = "";
 		try {
-			 HashMap<Integer, Float> similarityMap = Main.cosineSimilarity(normolizedQuery);
+			 HashMap<Integer, Float> similarityMap = vectorSpace.cosineSimilarity(normolizedQuery);
 			 for (int id : similarityMap.keySet()) {
 				 relavantTweets.add(new Tweet(DbUtils.getTweetContentById("original_text", id), "Cosine similarity score: " + similarityMap.get(id), id));
 		     }
+			 queryExpantion = addingQueryExpantion(similarityMap, "negative", query);
         } catch (IOException e) {
 	        e.printStackTrace();
         }
@@ -199,7 +202,8 @@ public class TweetController {
 		String[] nested = {
 				"value='"+query+"'",
 				"", 
-				"checked", 
+				"checked",
+				queryExpantion,
 				"" + totalRelevantTweets,
 				"" + positiveTweets.size(),
 				"" + negativeTweets.size(),
@@ -210,13 +214,33 @@ public class TweetController {
 		return page;
 	}
 	
+	
+	private String addingQueryExpantion(HashMap<Integer, Float> similarityMap, String posOrNeg, String query) {
+		String qExp = "";
+		try {
+			HashMap<String, Float> expantionWordsMap = ReadFiles.queryExpansion(vectorSpace.getTweetsMap(), similarityMap);
+			int number = 0;
+			for (String expantionWords : expantionWordsMap.keySet()) {
+				if (number > 5) {
+					break;
+				}
+				number++;
+				String subStringWord = expantionWords.substring(0, expantionWords.indexOf("_"));
+				qExp += 
+						
+							"<p>" +
+								"<a href='http://localhost:8080/?query=" + query + " "+subStringWord +"&type="+ posOrNeg +"'>"+subStringWord+"</a>" +
+							"</p>";
+			}
+        } catch (IOException e) {
+	        e.printStackTrace();
+        }
+		return qExp;
+	}
+	
 	private String preprocessQuery(String query) {
 		// Preprocessing
 		String preProcessedQuery = UserInputProcessing.parsing(query);
-		
-		// Stemmer
-		//Stemmer s = new Stemmer();
-		//String stemmedQuery = s.normalization(preProcessedQuery);
 		
 		return preProcessedQuery;//stemmedQuery;
 	}
