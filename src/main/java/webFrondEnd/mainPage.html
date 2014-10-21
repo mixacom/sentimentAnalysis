@@ -76,7 +76,7 @@
 			margin-bottom: 50px;
 			color: #666;
 		}
-		.positiveTweets {
+		.sentimentTweets {
 			border: 1px solid black; 
 			padding: 10px;
 			width: 85%;
@@ -200,17 +200,23 @@
 		<table class="nav">
 				<tr>
 					<td>
-						Tweets found: ...
+						Tweets found: [#nested]
 					</td>
 					<td>
-						Positive tweets: ...
+						Positive tweets: [#nested]
 					</td>
 					<td>
-						Negative tweets: ....
+						Negative tweets: [#nested]
 					</td>
 				</tr>
 			</table>
-		<div class="positiveTweets">
+		<div class="sentimentTweets">
+			<table class="results">		
+				[#nested]
+			</table>
+		</div>
+		
+		<div class="sentimentTweets">
 			<table class="results">		
 				[#nested]
 			</table>

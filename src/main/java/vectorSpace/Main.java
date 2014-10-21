@@ -14,9 +14,6 @@ public class Main {
         HashMap<Integer, String> map = dbConnection.mySqlConnection();
         HashMap<Integer, Float> similarity = ReadFiles.similarity(map, query);
         
-        for (int word : similarity.keySet()) {
-            System.out.println("Document " + word + "'s similarity with query is " + similarity.get(word));
-        }
         
         if (ReadFiles.allTheDf.isEmpty()) {
         	ReadFiles.df(map);

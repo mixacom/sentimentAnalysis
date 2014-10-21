@@ -251,8 +251,7 @@ public class ReadFiles {
         else{
         	tfidf = allTheTfIdf;
         }
-    	System.out.println("test");
-        
+    	 
     	int tfhashSize=tfidf.size();
         List<Integer> key = fileList;//存储各个文档名的List
         HashMap<Integer, Float> similarity = new HashMap<Integer, Float>();
@@ -364,11 +363,6 @@ public class ReadFiles {
     			wordAndDf = sortByComparatorQE(wordAndDf, false);
     		}
     	}
-    	
-    	for (String word: wordAndDf.keySet()) {
-			System.out.println(word+"\n");
-			System.out.println(wordAndDf.get(word));
-		}
     	
     	
     	

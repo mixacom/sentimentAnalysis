@@ -94,7 +94,7 @@ public class SentimentAnalysisUsingNaiveBayes {
         }
         indices[i] = featureMap.size();
         values[i] = (double)(Double.parseDouble(tokens[tokens.length-1]) - 1);
-		return new SparseInstance(1.0,values,indices,featureMap.size());
+		return new SparseInstance(1.0,values,indices,featureMap.size()+1);
 	}
 	
 	public void trainClassifier(final String input_file) {

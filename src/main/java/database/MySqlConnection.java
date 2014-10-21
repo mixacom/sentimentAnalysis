@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class MySqlConnection {
 	
 	Connection connection;
-	public final int LIMIT = 3000;
+	public final int LIMIT = 1000;
 	public MySqlConnection() {
 		try {
 	        Class.forName("com.mysql.jdbc.Driver");
@@ -14,7 +14,6 @@ public class MySqlConnection {
 		
 		this.connection = DriverManager.getConnection(
 				"jdbc:mysql://localhost:3306/opinius?useUnicode=true&characterEncoding=utf8", "root", "");
-		System.out.println("Started mySql-connection!");
 		} catch (ClassNotFoundException e) {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
@@ -53,8 +52,7 @@ public class MySqlConnection {
 	public void closeConnection() {
 		try {
 	        connection.close();
-	        System.out.println("Closed mySql-connection!");
-        } catch (SQLException e) {
+	    } catch (SQLException e) {
 	        e.printStackTrace();
         }
 	}

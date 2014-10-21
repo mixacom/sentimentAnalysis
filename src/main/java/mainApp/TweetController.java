@@ -33,7 +33,7 @@ public class TweetController {
 			normolizedQuery = stemmer.normalization(preprocessQuery(q));
 		}
 		if (q == null) {
-			String fileContent = readFile("webFrondEnd/mainPage.html", new String[]{"", "checked", "", ""});
+			String fileContent = readFile("webFrondEnd/mainPage.html", new String[]{"", "checked", "", "", ""});
 			return fileContent;
         } else {
         	if (type.equals("positive")) {
@@ -55,7 +55,7 @@ public class TweetController {
 		try {
 			 HashMap<Integer, Float> similarityMap = Main.cosineSimilarity(normolizedQuery);
 			 for (int id : similarityMap.keySet()) {
-				 relavantTweets.add(new Tweet(DbUtils.getTweetContentById("original_text", id), "score: " + similarityMap.get(id), id));
+				 relavantTweets.add(new Tweet(DbUtils.getTweetContentById("original_text", id), "Cosine similarity score: " + similarityMap.get(id), id));
 		     }
         } catch (IOException e) {
 	        // TODO Auto-generated catch block
@@ -70,10 +70,35 @@ public class TweetController {
 		ArrayList<Tweet> positiveTweets = tweetsBySentiment.get(2);
 		ArrayList<Tweet> neutralTweets = tweetsBySentiment.get(1);
 		ArrayList<Tweet> negativeTweets = tweetsBySentiment.get(0);
+		int totalRelevantTweets = positiveTweets.size() + neutralTweets.size() + negativeTweets.size();
 		
-		String tweetHTML = "";
+		String posTweetHTML = "";
 		for (Tweet tweet: positiveTweets) {
-			tweetHTML += 
+			posTweetHTML += 
+					"<tr>" +
+						"<td>" +	
+								"<table class='singleResult'>" +
+									"<tr>" + 
+										"<td class='user'>" +
+										tweet.getUser() + 
+										"</td><td class='date'>" +
+										"Tweet-id" + tweet.getId() + "</td>" +
+									"</tr><tr class='content'><td>" +
+										tweet.getContent() + "</td>" +
+									"</tr>" +
+								"</table>" +
+						"</td>" +
+					"</tr>"; 
+		}
+		
+		String neuTweetHTML = "";
+		int num = 0;
+		for (Tweet tweet: neutralTweets) {
+			if (num > 9) {
+				break;
+			}
+			num++;
+			neuTweetHTML += 
 					"<tr>" +
 						"<td>" +	
 								"<table class='singleResult'>" +
@@ -95,7 +120,11 @@ public class TweetController {
 				"value='"+query+"'",
 				"checked", 
 				"", 
-				"<tr><th><h2>Positive tweets about: '"+ query +"'</h2></th></tr>" + tweetHTML
+				"" + totalRelevantTweets,
+				"" + positiveTweets.size(),
+				"" + negativeTweets.size(),
+				"<tr><th><h2>Positive tweets about: '"+ query +"'</h2></th></tr>" + posTweetHTML,
+				"<tr><th><h2>Top 10 relevant neutral tweets about: '"+ query +"'</h2></th></tr>" + neuTweetHTML
 		};
 		String page = readFile("webFrondEnd/mainPage.html", nested);
 		return page;
@@ -107,11 +136,75 @@ public class TweetController {
 	 * @return A string containing the HTML-code for the resulting page, which shows the most negative tweets related to the query
 	 */
 	private String getNegativeTweets(String normolizedQuery, String query) {
+		ArrayList<Tweet> relavantTweets = new ArrayList<Tweet>();
+		try {
+			 HashMap<Integer, Float> similarityMap = Main.cosineSimilarity(normolizedQuery);
+			 for (int id : similarityMap.keySet()) {
+				 relavantTweets.add(new Tweet(DbUtils.getTweetContentById("original_text", id), "Cosine similarity score: " + similarityMap.get(id), id));
+		     }
+        } catch (IOException e) {
+	        e.printStackTrace();
+        }
+		
+		ArrayList<ArrayList<Tweet>> tweetsBySentiment = DbUtils.getTweetsBySentiment(relavantTweets);
+		ArrayList<Tweet> positiveTweets = tweetsBySentiment.get(2);
+		ArrayList<Tweet> neutralTweets = tweetsBySentiment.get(1);
+		ArrayList<Tweet> negativeTweets = tweetsBySentiment.get(0);
+		int totalRelevantTweets = positiveTweets.size() + neutralTweets.size() + negativeTweets.size();
+		
+		String negTweetHTML = "";
+		for (Tweet tweet: negativeTweets) {
+			negTweetHTML += 
+					"<tr>" +
+						"<td>" +	
+								"<table class='singleResult'>" +
+									"<tr>" + 
+										"<td class='user'>" +
+										tweet.getUser() + 
+										"</td><td class='date'>" +
+										"Tweet-id" + tweet.getId() + "</td>" +
+									"</tr><tr class='content'><td>" +
+										tweet.getContent() + "</td>" +
+									"</tr>" +
+								"</table>" +
+						"</td>" +
+					"</tr>"; 
+		}
+		
+		String neuTweetHTML = "";
+		int num = 0;
+		for (Tweet tweet: neutralTweets) {
+			if (num > 9) {
+				break;
+			}
+			num++;
+			neuTweetHTML += 
+					"<tr>" +
+						"<td>" +	
+								"<table class='singleResult'>" +
+									"<tr>" + 
+										"<td class='user'>" +
+										tweet.getUser() + 
+										"</td><td class='date'>" +
+										tweet.getId() + "</td>" +
+									"</tr><tr class='content'><td>" +
+										tweet.getContent() + "</td>" +
+									"</tr>" +
+								"</table>" +
+						"</td>" +
+					"</tr>"; 
+		}
+		
+		// Insert the relevant components into the html
 		String[] nested = {
-				"value="+query,
+				"value='"+query+"'",
 				"", 
 				"checked", 
-				"<p>Negative tweets about: '"+ query +"'</p>"
+				"" + totalRelevantTweets,
+				"" + positiveTweets.size(),
+				"" + negativeTweets.size(),
+				"<tr><th><h2>Negative tweets about: '"+ query +"'</h2></th></tr>" + negTweetHTML,
+				"<tr><th><h2>Top 10 relevant neutral tweets about: '"+ query +"'</h2></th></tr>" + neuTweetHTML
 		};
 		String page = readFile("webFrondEnd/mainPage.html", nested);
 		return page;
