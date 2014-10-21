@@ -120,12 +120,12 @@ public class TweetController {
 				"value='"+query+"'",
 				"checked", 
 				"", 
-				queryExpantion,
 				"" + totalRelevantTweets,
 				"" + positiveTweets.size(),
 				"" + negativeTweets.size(),
 				"<tr><th><h2>Positive tweets about: '"+ query +"'</h2></th></tr>" + posTweetHTML,
-				"<tr><th><h2>Top 10 relevant neutral tweets about: '"+ query +"'</h2></th></tr>" + neuTweetHTML
+				"<tr><th><h2>Top 10 relevant neutral tweets about: '"+ query +"'</h2></th></tr>" + neuTweetHTML,
+				queryExpantion
 		};
 		String page = readFile("webFrondEnd/mainPage.html", nested);
 		return page;
@@ -203,12 +203,12 @@ public class TweetController {
 				"value='"+query+"'",
 				"", 
 				"checked",
-				queryExpantion,
 				"" + totalRelevantTweets,
 				"" + positiveTweets.size(),
 				"" + negativeTweets.size(),
 				"<tr><th><h2>Negative tweets about: '"+ query +"'</h2></th></tr>" + negTweetHTML,
-				"<tr><th><h2>Top 10 relevant neutral tweets about: '"+ query +"'</h2></th></tr>" + neuTweetHTML
+				"<tr><th><h2>Top 10 relevant neutral tweets about: '"+ query +"'</h2></th></tr>" + neuTweetHTML,
+				queryExpantion
 		};
 		String page = readFile("webFrondEnd/mainPage.html", nested);
 		return page;

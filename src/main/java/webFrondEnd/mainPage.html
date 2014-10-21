@@ -82,7 +82,7 @@
 			width: 85%;
 			margin: auto;
 			background: #CCC;
-			margin-bottom: 100px;
+			margin-bottom: 50px;
 		}
 		.singleResult {
 			border: solid 1px gray;
@@ -112,6 +112,10 @@
 		.results th {
 			border-bottom: 2px solid #e06018;
 			margin-bottom: 50px;
+			font-size: 30px;
+		}
+		.results th h2 {
+			font-weight: 600;
 		}
 		#footer {
 			position: fixed;
@@ -209,12 +213,6 @@
 		  <input type="radio" name="type" value="negative" [#nested]>Get negative tweets
 		</form>
 		
-		<div class="queryExpention">
-				<h2 style="text-align: center; margin-bottom: 5px; border-bottom: 1px solid black;">
-					Query expantion suggestions:
-				</h2>
-				[#nested]
-		</div>
 		<table class="nav">
 				<tr>
 					<td>
@@ -241,6 +239,13 @@
 		</div>
 	</div>
 	
+	<div class="queryExpention">
+			<h2 style="text-align: center; margin-bottom: 5px; border-bottom: 1px solid black;">
+				Query expantion suggestions:
+			</h2>
+			[#nested]
+	</div>
+		
 	<div id="footer">
 		<p>Emin Alasgarov - Mikhail Evchenko - Wilco van Leeuwen - Xuming Meng - Zhang Yangfengfan</p>
 	</div>
