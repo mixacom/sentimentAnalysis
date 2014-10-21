@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import database.DbUtils;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import preprocessing.UserInputProcessing;
+import stopWords.StopWord;
 import vectorSpace.Main;
 import vectorSpace.ReadFiles;
 
@@ -26,12 +27,13 @@ public class TweetController {
 
 	public static final MaxentTagger tagger = new MaxentTagger("res/gate-EN-twitter.model"); // should be in memory
 	public final Main vectorSpace = new Main();
-	
+	public Stemmer stemmer = new Stemmer();
+	public final ArrayList<String> stopwords = getTopStopWords(50);
+			
 	@RequestMapping("/")
     public String init(@RequestParam(value="query", required=false) String q, @RequestParam(value="type", required=false) String type) {
 		String normolizedQuery = q;
 		if (q != "" && q != null) {
-			Stemmer stemmer = new Stemmer();
 			normolizedQuery = stemmer.normalization(preprocessQuery(q));
 		}
 		if (q == null) {
@@ -217,6 +219,7 @@ public class TweetController {
 	
 	private String addingQueryExpantion(HashMap<Integer, Float> similarityMap, String posOrNeg, String query) {
 		String qExp = "";
+		
 		try {
 			HashMap<String, Float> expantionWordsMap = ReadFiles.queryExpansion(vectorSpace.getTweetsMap(), similarityMap);
 			int number = 0;
@@ -224,13 +227,16 @@ public class TweetController {
 				if (number > 5) {
 					break;
 				}
-				number++;
-				String subStringWord = expantionWords.substring(0, expantionWords.indexOf("_"));
-				qExp += 
-						
-							"<p>" +
-								"<a href='http://localhost:8080/?query=" + query + " "+subStringWord +"&type="+ posOrNeg +"'>"+subStringWord+"</a>" +
-							"</p>";
+				if (!stopwords.contains(expantionWords)) {
+					
+					number++;
+					String subStringWord = expantionWords.substring(0, expantionWords.indexOf("_"));
+					qExp += 
+							
+							"<a href='http://localhost:8080/?query=" + query + " "+subStringWord +"&type="+ posOrNeg +"'>"+"<p>" +
+									subStringWord +
+								"</p>"+"</a>";
+				}
 			}
         } catch (IOException e) {
 	        e.printStackTrace();
@@ -285,5 +291,19 @@ public class TweetController {
 		result += line.substring(pos+9, line.length());
 		
 		return result;
+	}
+	
+	private ArrayList<String> getTopStopWords(int top) {
+		StopWord stopword = new StopWord();
+		HashMap<String, Integer> stopwords = stopword.getWords();
+		ArrayList<String> topStopWords = new ArrayList<String>();
+		int i = 0;
+		for (String word : stopwords.keySet()) {
+			if (i > top) {
+				break;
+			}
+			topStopWords.add(stemmer.normalization(this.preprocessQuery(word)));
+		}
+		return topStopWords;
 	}
 }

@@ -16,11 +16,11 @@ import java.util.Map;
 import constants.Components;
 import au.com.bytecode.opencsv.CSVWriter;
 
-public class stopWordVerification {
+public class StopWord {
 	
 	HashMap<String, Integer> map;
-	
-	public stopWordVerification() {
+
+	public StopWord() {
 	    try {
 	        map = getTweetContents();
         } catch (IOException e) {
@@ -31,7 +31,8 @@ public class stopWordVerification {
 	private static HashMap<String, Integer> getTweetContents() throws IOException {
 		HashMap<String, Integer> wordCountMap = new HashMap<String, Integer>();
 		
-		BufferedReader br = new BufferedReader(new FileReader(Components.getBaseFilePath() + "src/main/java/backEnd/tweetContentt.txt"));
+		BufferedReader br = new BufferedReader(new FileReader(Components.getBaseFilePath() + "src/main/java/stopWords/tweetContentt.txt"));
+		
 		String line;
 		while ((line = br.readLine()) != null) {
 			String[] words = line.split(" ");
@@ -71,7 +72,7 @@ public class stopWordVerification {
 	}
 	
 	public void writeFile() throws IOException {
-		CSVWriter csvWriter = new CSVWriter(new FileWriter(Components.getBaseFilePath() + "src/main/java/backEnd/stopWordVeri.csv"));
+		CSVWriter csvWriter = new CSVWriter(new FileWriter(Components.getBaseFilePath() + "src/main/java/stopWords/stopWordVeri.csv"));
 		for (String key : map.keySet()) {
 	    	String[] write = new String[2];
 	    	write[0] = key;
@@ -82,14 +83,14 @@ public class stopWordVerification {
 	}
 	
 	public static void main(String[] args) {
-	    stopWordVerification swv = new stopWordVerification();
-	    try {
-	        swv.writeFile();
+	    StopWord swv = new StopWord();
+//	    try {
+	        //swv.writeFile();
 	        System.out.println(swv.getWords().toString());
-        } catch (IOException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
-        }
+//        } catch (IOException e) {
+//	        // TODO Auto-generated catch block
+//	        e.printStackTrace();
+//        }
 	    
     }
 }
