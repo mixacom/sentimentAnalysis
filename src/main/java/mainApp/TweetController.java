@@ -8,11 +8,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import languageDetection.LanguageDetect;
 import normalization.Stemmer;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.detectlanguage.errors.APIError;
 
 import database.DbUtils;
 import database.MySqlConnection;
@@ -32,6 +35,7 @@ public class TweetController {
 	public final Main vectorSpace = new Main(connection);
 	public Stemmer stemmer = new Stemmer();
 	public final ArrayList<String> stopwords = getTopStopWords(50);
+	private LanguageDetect languageDetection = new LanguageDetect();
 			
 	@RequestMapping("/")
     public String init(@RequestParam(value="query", required=false) String q, @RequestParam(value="type", required=false) String type) {
@@ -39,6 +43,14 @@ public class TweetController {
 		if (q != "" && q != null) {
 			String normolizedQuery = stemmer.normalization(preprocessQuery(q));
 			queryRemovedStopWords = removeStopWords(normolizedQuery);
+			try {
+                if (!languageDetection.checkEnglish(q)) {
+                	return readFile("webFrondEnd/mainPage.html", new String[]{"", "checked", "", "", "", "", "Please enter a English query. We cannot process: "+q, "", ""});
+                }
+            } catch (APIError e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 		}
 		
 		System.out.println("Query after processing: " + queryRemovedStopWords);

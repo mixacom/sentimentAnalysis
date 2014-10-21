@@ -72,7 +72,7 @@ public class StopWord {
 	}
 	
 	public void writeFile() throws IOException {
-		CSVWriter csvWriter = new CSVWriter(new FileWriter(Components.getBaseFilePath() + "src/main/java/stopWords/stopWordVeri.csv"));
+		CSVWriter csvWriter = new CSVWriter(new FileWriter(Components.getBaseFilePath() + "src/main/java/stopWords/stopWordVeri2.csv"));
 		for (String key : map.keySet()) {
 	    	String[] write = new String[2];
 	    	write[0] = key;
