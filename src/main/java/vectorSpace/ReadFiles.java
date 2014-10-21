@@ -245,7 +245,7 @@ public class ReadFiles {
     	HashMap<Integer, HashMap<String, Float>> tfidf = new HashMap<Integer, HashMap<String, Float>>();
     	
     	if (allTheTfIdf.isEmpty()) {
-    		System.out.print("allTheTfIdf is empty");
+//    		System.out.print("allTheTfIdf is empty");
         	tfidf = ReadFiles.tfidf(tweets);
 		}
         else{

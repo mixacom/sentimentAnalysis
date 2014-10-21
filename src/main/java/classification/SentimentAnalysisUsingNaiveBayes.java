@@ -14,6 +14,7 @@ import java.util.Map;
 import constants.Components;
 import database.MySqlConnection;
 import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.SMO;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -25,7 +26,7 @@ public class SentimentAnalysisUsingNaiveBayes {
 	private HashMap<String, Integer> featureMap;
 	private FastVector sentimentClassList;
 	private final String rootpath = Components.getBaseFilePath() + "src/main/java/classification/";
-	private NaiveBayes classifier;
+	private SMO classifier;
 	private int trainingDataSize;
 	private Instances trainingInstances;
 	
@@ -132,7 +133,7 @@ public class SentimentAnalysisUsingNaiveBayes {
         
 	    //You can create the classifier that you want. In this tutorial we use NaiveBayes Classifier
 	    //For instance classifier = new SMO;
-	    classifier = new NaiveBayes();
+	    classifier = new SMO();
 	    //System.out.println(trainingInstances.numAttributes() + " " + trainingInstances.numInstances());
 	    //System.out.println(trainingInstances.instance(0));
 	    try {
@@ -177,7 +178,7 @@ public class SentimentAnalysisUsingNaiveBayes {
         int classified, id;
 	    try {
         	Statement tweetsFromDb = dbConnection.createStatement();
-			ResultSet resultSetTweets = tweetsFromDb.executeQuery("select text, id from tweet_info WHERE id > 333157 LIMIT " + mySql.LIMIT);
+			ResultSet resultSetTweets = tweetsFromDb.executeQuery("select text, id from tweet_info");
 			
 			//get tweets from database and put into 
 			while (resultSetTweets.next()) {
@@ -185,10 +186,11 @@ public class SentimentAnalysisUsingNaiveBayes {
 				classified = naiveBayes.classify(content);
 				id = resultSetTweets.getInt(2);
 				
-				System.out.println("UPDATE tweet_info SET naiveBayes=" + classified + " WHERE id=" + id + ";");
+				if (id % 10000 == 0)
+					System.out.println("UPDATE tweet_info SET res_svm=" + classified + " WHERE id=" + id + ";");
 				
 				Statement update = dbConnection.createStatement();
-				update.executeUpdate("UPDATE tweet_info SET naiveBayes=" + classified + " WHERE id=" + id + ";");
+				update.executeUpdate("UPDATE tweet_info SET res_svm=" + classified + " WHERE id=" + id + ";");
 			}
         } catch (SQLException e) {
 	        // TODO Auto-generated catch block

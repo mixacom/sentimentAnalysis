@@ -14,6 +14,8 @@ public class MySqlConnection {
 		
 		this.connection = DriverManager.getConnection(
 				"jdbc:mysql://localhost:3306/opinius?useUnicode=true&characterEncoding=utf8", "root", "");
+		
+		//System.out.println("Database connection is made");
 		} catch (ClassNotFoundException e) {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
@@ -34,9 +36,6 @@ public class MySqlConnection {
 			while (resultSet.next()) {
 				tweets.put(resultSet.getInt(11), resultSet.getString(8));
 			}
-	
-			System.out.println("Success connect Mysql server!");
-			connection.close();
 			
 		} catch(SQLException e) {
 			System.out.println("SQLException while making the HashMap");
@@ -52,6 +51,7 @@ public class MySqlConnection {
 	public void closeConnection() {
 		try {
 	        connection.close();
+	       // System.out.println("Database connection is closed");
 	    } catch (SQLException e) {
 	        e.printStackTrace();
         }

@@ -34,7 +34,7 @@ public class DbUtils {
 		ArrayList<Tweet> positiveTweets = new ArrayList<Tweet>();
 		
 		for (Tweet tweet : tweets) {
-			String classified = DbUtils.getTweetContentById("naiveBayes", tweet.getId());
+			String classified = DbUtils.getTweetContentById("final_res", tweet.getId());
 			try {
 				int sentimentInt = Integer.parseInt(classified);
 				if (sentimentInt == 0) {

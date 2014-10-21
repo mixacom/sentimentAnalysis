@@ -32,18 +32,21 @@ public class TweetController {
 			
 	@RequestMapping("/")
     public String init(@RequestParam(value="query", required=false) String q, @RequestParam(value="type", required=false) String type) {
-		String normolizedQuery = q;
+		String queryRemovedStopWords = q;
 		if (q != "" && q != null) {
-			normolizedQuery = stemmer.normalization(preprocessQuery(q));
+			String normolizedQuery = stemmer.normalization(preprocessQuery(q));
+			queryRemovedStopWords = removeStopWords(normolizedQuery);
 		}
+		
+		System.out.println("Query after processing: " + queryRemovedStopWords);
 		if (q == null) {
 			String fileContent = readFile("webFrondEnd/mainPage.html", new String[]{"", "checked", "", "", "", "", "", "", ""});
 			return fileContent;
         } else {
         	if (type.equals("positive")) {
-        		return getPositiveTweets(normolizedQuery, q);
+        		return getPositiveTweets(queryRemovedStopWords, q);
         	} else {
-        		return getNegativeTweets(normolizedQuery, q);
+        		return getNegativeTweets(queryRemovedStopWords, q);
         	}
         }
     }
@@ -75,22 +78,29 @@ public class TweetController {
 		int totalRelevantTweets = positiveTweets.size() + neutralTweets.size() + negativeTweets.size();
 		
 		String posTweetHTML = "";
+		int numPos = 0;
 		for (Tweet tweet: positiveTweets) {
-			posTweetHTML += 
-					"<tr>" +
-						"<td>" +	
-								"<table class='singleResult'>" +
-									"<tr>" + 
-										"<td class='user'>" +
-										tweet.getUser() + 
-										"</td><td class='date'>" +
-										"Tweet-id" + tweet.getId() + "</td>" +
-									"</tr><tr class='content'><td>" +
-										tweet.getContent() + "</td>" +
-									"</tr>" +
-								"</table>" +
-						"</td>" +
-					"</tr>"; 
+			if (numPos >= 10) {
+				break;
+			}
+			if (tweet.getContent().indexOf("\"RT ") != 0) {
+				numPos++;
+				posTweetHTML += 
+						"<tr>" +
+							"<td>" +	
+									"<table class='singleResult'>" +
+										"<tr>" + 
+											"<td class='user'>" +
+											tweet.getUser() + 
+											"</td><td class='date'>" +
+											"Tweet-id" + tweet.getId() + "</td>" +
+										"</tr><tr class='content'><td>" +
+											tweet.getContent() + "</td>" +
+										"</tr>" +
+									"</table>" +
+							"</td>" +
+						"</tr>"; 
+			}
 		}
 		
 		String neuTweetHTML = "";
@@ -99,22 +109,25 @@ public class TweetController {
 			if (num > 9) {
 				break;
 			}
-			num++;
-			neuTweetHTML += 
-					"<tr>" +
-						"<td>" +	
-								"<table class='singleResult'>" +
-									"<tr>" + 
-										"<td class='user'>" +
-										tweet.getUser() + 
-										"</td><td class='date'>" +
-										tweet.getId() + "</td>" +
-									"</tr><tr class='content'><td>" +
-										tweet.getContent() + "</td>" +
-									"</tr>" +
-								"</table>" +
-						"</td>" +
-					"</tr>"; 
+			
+			if (tweet.getContent().indexOf("\"RT ") != 0) {
+				num++;
+				neuTweetHTML += 
+						"<tr>" +
+							"<td>" +	
+									"<table class='singleResult'>" +
+										"<tr>" + 
+											"<td class='user'>" +
+											tweet.getUser() + 
+											"</td><td class='date'>" +
+											tweet.getId() + "</td>" +
+										"</tr><tr class='content'><td>" +
+											tweet.getContent() + "</td>" +
+										"</tr>" +
+									"</table>" +
+							"</td>" +
+						"</tr>"; 
+			}
 		}
 		
 		// Insert the relevant components into the html
@@ -126,7 +139,7 @@ public class TweetController {
 				"" + positiveTweets.size(),
 				"" + negativeTweets.size(),
 				"<tr><th><h2>Positive tweets about: '"+ query +"'</h2></th></tr>" + posTweetHTML,
-				"<tr><th><h2>Top 10 relevant neutral tweets about: '"+ query +"'</h2></th></tr>" + neuTweetHTML,
+				"<tr><th><h2>Most relevant neutral tweets about: '"+ query +"'</h2></th></tr>" + neuTweetHTML,
 				queryExpantion
 		};
 		String page = readFile("webFrondEnd/mainPage.html", nested);
@@ -158,22 +171,29 @@ public class TweetController {
 		int totalRelevantTweets = positiveTweets.size() + neutralTweets.size() + negativeTweets.size();
 		
 		String negTweetHTML = "";
+		int numNeg = 0;
 		for (Tweet tweet: negativeTweets) {
-			negTweetHTML += 
-					"<tr>" +
-						"<td>" +	
-								"<table class='singleResult'>" +
-									"<tr>" + 
-										"<td class='user'>" +
-										tweet.getUser() + 
-										"</td><td class='date'>" +
-										"Tweet-id" + tweet.getId() + "</td>" +
-									"</tr><tr class='content'><td>" +
-										tweet.getContent() + "</td>" +
-									"</tr>" +
-								"</table>" +
-						"</td>" +
-					"</tr>"; 
+			if (numNeg >= 10) {
+				break;
+			}
+			if (tweet.getContent().indexOf("\"RT ") != 0) {
+				numNeg++;
+				negTweetHTML += 
+						"<tr>" +
+							"<td>" +	
+									"<table class='singleResult'>" +
+										"<tr>" + 
+											"<td class='user'>" +
+											tweet.getUser() + 
+											"</td><td class='date'>" +
+											"Tweet-id" + tweet.getId() + "</td>" +
+										"</tr><tr class='content'><td>" +
+											tweet.getContent() + "</td>" +
+										"</tr>" +
+									"</table>" +
+							"</td>" +
+						"</tr>"; 
+			}
 		}
 		
 		String neuTweetHTML = "";
@@ -182,22 +202,24 @@ public class TweetController {
 			if (num > 9) {
 				break;
 			}
-			num++;
-			neuTweetHTML += 
-					"<tr>" +
-						"<td>" +	
-								"<table class='singleResult'>" +
-									"<tr>" + 
-										"<td class='user'>" +
-										tweet.getUser() + 
-										"</td><td class='date'>" +
-										tweet.getId() + "</td>" +
-									"</tr><tr class='content'><td>" +
-										tweet.getContent() + "</td>" +
-									"</tr>" +
-								"</table>" +
-						"</td>" +
-					"</tr>"; 
+			if (tweet.getContent().indexOf("\"RT ") != 0) {
+				num++;
+				neuTweetHTML += 
+						"<tr>" +
+							"<td>" +	
+									"<table class='singleResult'>" +
+										"<tr>" + 
+											"<td class='user'>" +
+											tweet.getUser() + 
+											"</td><td class='date'>" +
+											tweet.getId() + "</td>" +
+										"</tr><tr class='content'><td>" +
+											tweet.getContent() + "</td>" +
+										"</tr>" +
+									"</table>" +
+							"</td>" +
+						"</tr>"; 
+			}
 		}
 		
 		// Insert the relevant components into the html
@@ -209,7 +231,7 @@ public class TweetController {
 				"" + positiveTweets.size(),
 				"" + negativeTweets.size(),
 				"<tr><th><h2>Negative tweets about: '"+ query +"'</h2></th></tr>" + negTweetHTML,
-				"<tr><th><h2>Top 10 relevant neutral tweets about: '"+ query +"'</h2></th></tr>" + neuTweetHTML,
+				"<tr><th><h2>Most relevant neutral tweets about: '"+ query +"'</h2></th></tr>" + neuTweetHTML,
 				queryExpantion
 		};
 		String page = readFile("webFrondEnd/mainPage.html", nested);
@@ -300,10 +322,23 @@ public class TweetController {
 		int i = 0;
 		for (String word : stopwords.keySet()) {
 			if (i > top) {
-				break;
+				return topStopWords;
 			}
+			i++;
 			topStopWords.add(stemmer.normalization(this.preprocessQuery(word)));
 		}
 		return topStopWords;
+	}
+	
+	private String removeStopWords(String normalizedQuery) {
+		String removedStopWordQuery = "";
+		String[] words = normalizedQuery.split(" ");
+		
+		for (String word : words) {
+			if (!stopwords.contains(word)) {
+				removedStopWordQuery += word + " ";
+			}
+		}
+		return removedStopWordQuery;
 	}
 }
