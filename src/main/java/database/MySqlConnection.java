@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class MySqlConnection {
 	
 	Connection connection;
-	public final static int LIMIT = 500;
+	public final static int LIMIT = 10000;
 	public MySqlConnection() {
 		try {
 	        Class.forName("com.mysql.jdbc.Driver");

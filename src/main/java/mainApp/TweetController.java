@@ -261,7 +261,7 @@ public class TweetController {
 			HashMap<String, Float> expantionWordsMap = ReadFiles.queryExpansion(vectorSpace.getTweetsMap(), similarityMap);
 			int number = 0;
 			for (String expantionWords : expantionWordsMap.keySet()) {
-				if (number > 5) {
+				if (number > 20) {
 					break;
 				}
 				if (!stopwords.contains(expantionWords)) {
